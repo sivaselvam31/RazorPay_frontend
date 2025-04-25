@@ -23,7 +23,7 @@
       }
 
       try {
-        // Updated backend URL here
+        // Create order API call
         const response = await fetch('https://razorpay-backend-vqnd.onrender.com/create-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -32,15 +32,16 @@
 
         const order = await response.json();
 
+        // Razorpay options
         const options = {
-          key: 'rzp_live_hMUbJWLhJJ38kz', // 🔁 Replace this with your actual live Razorpay key
+          key: 'rzp_live_hMUbJWLhJJ38kz', // Replace with your actual Razorpay key
           amount: order.amount,
           currency: order.currency,
           name: 'Your Company',
           description: 'Live Payment',
           order_id: order.id,
           handler: function (response) {
-            // Updated backend URL for payment verification
+            // Payment verification API call
             fetch('https://razorpay-backend-vqnd.onrender.com/verify-payment', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -48,8 +49,9 @@
             })
             .then(res => res.json())
             .then(data => {
+              console.log('Payment verification response:', data);
               if (data.status === 'ok') {
-                // Redirect to payment success page
+                // Redirect to the payment success page
                 window.location.href = 'https://razorpay-backend-vqnd.onrender.com/payment-success';
               } else {
                 alert('Payment verification failed');
@@ -58,6 +60,7 @@
           }
         };
 
+        // Open the Razorpay payment modal
         const rzp = new Razorpay(options);
         rzp.open();
       } catch (err) {
