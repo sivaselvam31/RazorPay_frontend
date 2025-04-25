@@ -23,7 +23,7 @@
       }
 
       try {
-        const response = await fetch('/create-order', {
+        const response = await fetch('https://razorpay-sq1z.onrender.com/create-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ amount })
@@ -32,15 +32,14 @@
         const order = await response.json();
 
         const options = {
-          key: 'RAZORPAY_KEY_ID_FROM_ENV', // replace this below using template rendering or inject via script
+          key: 'rzp_live_YOUR_KEY_HERE', // 🔁 Replace this with your actual live Razorpay key
           amount: order.amount,
           currency: order.currency,
           name: 'Your Company',
           description: 'Live Payment',
           order_id: order.id,
-          callback_url: '/payment-success',
           handler: function (response) {
-            fetch('/verify-payment', {
+            fetch('https://razorpay-sq1z.onrender.com/verify-payment', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(response)
@@ -48,7 +47,7 @@
             .then(res => res.json())
             .then(data => {
               if (data.status === 'ok') {
-                window.location.href = '/payment-success';
+                window.location.href = 'https://razorpay-sq1z.onrender.com/payment-success';
               } else {
                 alert('Payment verification failed');
               }
